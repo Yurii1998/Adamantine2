@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Adamantine 2 Token (ATI2)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Hero Section -->
+    <header>
+        <div class="hero">
+            <img src="path_to_logo_image" alt="Adamantine 2 Logo" class="logo">
+            <h1>Adamantine 2 Token (ATI2)</h1>
+            <p class="slogan">Stable growth and security for the long term (This is at least the plan. Let's contribute to this together! :D)</p>
+            <a href="#about-token" class="cta-button">Invest only what you are not afraid to lose with Adamantine 2 (Positive, isn't it?)</a>
+        </div>
+    </header>
+
+    <!-- About Token Section -->
+    <section id="about-token">
+        <h2>About Adamantine 2 Token (ATI2)</h2>
+        <p><strong>Total Supply:</strong> <span id="totalSupply">Loading...</span> ATI2</p>
+        <p><strong>Current Price:</strong> <span id="currentPrice">Loading...</span></p>
+        <p><strong>Tokens in Circulation:</strong> <span id="tokensInCirculation">Loading...</span></p>
+    </section>
+
+    <!-- Countdown Timer Section -->
+    <section id="countdown-timer">
+        <h2>Time until next unlock: 1000 ATI2</h2>
+        <p id="timer">Loading...</p>
+    </section>
+
+    <!-- Advantages of Investing Section -->
+    <section id="advantages">
+        <h2>Advantages of Investing in Adamantine 2 (ATI2)</h2>
+        <ul>
+            <li>Limited issuance of tokens will contribute to its deflation, increasing its value over time.</li>
+            <li>The daily limit of 1000 coins makes its distribution exclusive, increasing the demand.</li>
+            <li>A rational selling strategy of the creator guarantees sufficient liquidity and support of the token during market fluctuations.</li>
+            <li>Future integration with global projects will open up prospects for significant value growth.</li>
+            <li>Long-term strategic planning will ensure stable growth of the token for many years.</li>
+            <li>A strong and conscious community of owners will ensure the stability of the token and prevent its decline.</li>
+        </ul>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 Adamantine 2 Token (ATI2). All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript for BscScan API and Countdown Timer -->
+    <script>
+        const apiKey = N12IE6KTKIYMB5M5VNJJVRUWTVCQSVERKT
+        const contractAddress = N12IE6KTKIYMB5M5VNJJVRUWTVCQSVERKT
+        // Fetch Token Data from BscScan API
+        async function fetchTokenData() {
+            try {
+                // Get total supply of tokens
+                const totalSupplyResponse = await fetch(`https://api.bscscan.com/api?module=stats&action=tokensupply&contractaddress=${contractAddress}&apikey=${apiKey}`);
+                const totalSupplyData = await totalSupplyResponse.json();
+                const totalSupply = parseInt(totalSupplyData.result) / (10 ** 18); // Adjust for decimals
+                document.getElementById('totalSupply').innerText = totalSupply.toLocaleString();
+
+                // Get token holders (circulation data)
+                const holdersResponse = await fetch(`https://api.bscscan.com/api?module=token&action=tokenholderlist&contractaddress=${contractAddress}&apikey=${apiKey}`);
+                const holdersData = await holdersResponse.json();
+                const tokensInCirculation = holdersData.result.length;
+                document.getElementById('tokensInCirculation').innerText = tokensInCirculation;
+
+                // Placeholder for price (BscScan API doesn't provide price data directly)
+                // You may want to use CoinGecko or another service to get current price
+                document.getElementById('currentPrice').innerText = "$0.50"; // Replace with real price data
+                
+            } catch (error) {
+                console.error('Error fetching token data:', error);
+            }
+        }
+
+        // Countdown timer to 8:00am Calgary time for token release
+        function startCountdown() {
+            const targetTime = new Date();
+            targetTime.setHours(8, 0, 0, 0); // 8:00 AM
+
+            const now = new Date();
+            if (now.getHours() >= 8) {
+                targetTime.setDate(targetTime.getDate() + 1); // Next day if already past 8:00 AM
+            }
+
+            const updateCountdown = setInterval(function () {
+                const currentTime = new Date();
+                const difference = targetTime - currentTime;
+
+                if (difference <= 0) {
+                    clearInterval(updateCountdown);
+                    document.getElementById('timer').innerText = "Unlocking 1000 ATI2 now!";
+                } else {
+                    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                    document.getElementById('timer').innerText = `${hours}h ${minutes}m ${seconds}s`;
+                }
+            }, 1000);
+        }
+
+        // Initialize the token data and countdown timer on page load
+        window.onload = function() {
+            fetchTokenData();
+            startCountdown();
+        };
+    </script>
+</body>
+</html>
